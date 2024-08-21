@@ -1,11 +1,11 @@
 export enum TokenType {
-    VAR,
-    NOT,
-    OR,
-    AND,
-    OPEN,
-    CLOSE,
-    EOF,
+    VAR = "var",
+    NOT = "not",
+    OR = "or",
+    AND = "and",
+    OPEN = "open",
+    CLOSE = "close",
+    EOF = "eof",
 }
 
 export type Token = {
