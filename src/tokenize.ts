@@ -5,12 +5,13 @@ export enum TokenType {
     AND,
     OPEN,
     CLOSE,
+    EOF,
 }
 
-export interface Token {
+export type Token = {
     type: TokenType;
     value?: string;
-}
+};
 
 const createToken = (tokenString: string): Token => {
     switch (tokenString) {
@@ -75,6 +76,7 @@ export const tokenize = (inputString: string): Token[] => {
     );
 
     if (straggler !== "") tokens.push(createToken(straggler));
+    tokens.push({ type: TokenType.EOF });
 
     return tokens;
 };
