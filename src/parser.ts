@@ -1,23 +1,23 @@
 import type { Token } from "./tokenize";
 import { TokenType } from "./tokenize";
 
-type Value = {
+export type Value = {
     type: TokenType.VAR;
     value: string;
 };
 
-type BinaryOperation = {
+export type BinaryOperation = {
     type: TokenType.OR | TokenType.AND;
     lhs: Expression;
     rhs: Expression;
 };
 
-type Negation = {
+export type Negation = {
     type: TokenType.NOT;
     expression: Expression;
 };
 
-type Expression = Value | BinaryOperation | Negation;
+export type Expression = Value | BinaryOperation | Negation;
 
 interface ParseResult {
     result: Expression;
@@ -33,9 +33,7 @@ const createParseResult = (
 });
 
 export const parse = (tokenList: Token[]): Expression => {
-    const { result, remainingTokens } = parseOr(tokenList);
-    console.log(remainingTokens);
-    return result;
+    return parseOr(tokenList).result;
 };
 
 const parseOr = (tokenList: Token[]): ParseResult => {
