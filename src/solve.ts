@@ -1,20 +1,6 @@
 import type { Expression } from "./parser";
 import { evalExpr, type VariableValues } from "./eval";
-import { TokenType } from "./tokenize";
-
-export const collectVariables = (expr: Expression): Set<string> => {
-    if (expr.type === TokenType.AND || expr.type === TokenType.OR) {
-        const lhsVariables = collectVariables(expr.lhs);
-        const rhsVariables = collectVariables(expr.rhs);
-        return lhsVariables.union(rhsVariables);
-    } else if (expr.type === TokenType.NOT) {
-        return collectVariables(expr.expression);
-    } else if (expr.type === TokenType.VAR) {
-        return new Set([expr.value]);
-    }
-
-    return new Set();
-};
+import { collectVariables } from "./eval";
 
 // not very fp of me
 export const setToArray = (set: Set<any>): Array<any> => {

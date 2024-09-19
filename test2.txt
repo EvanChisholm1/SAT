@@ -1,0 +1,1 @@
+(A OR (NOT B)) AND (NOT (B => (A AND C)))

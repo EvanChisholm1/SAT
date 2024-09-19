@@ -103,7 +103,7 @@ const parseNot = (tokenList: Token[]): ParseResult => {
         return createParseResult({ type: TokenType.NOT, expression }, rest);
     } else if (currentToken.type === TokenType.OPEN) {
         const { result: expression, remainingTokens: rest } =
-            parseOr(remainingTokens);
+            parseImplication(remainingTokens);
         return createParseResult(expression, rest.slice(1));
     } else {
         return parseVar(tokenList);

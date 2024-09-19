@@ -1,4 +1,10 @@
-import type { BinaryOperation, Expression, Negation, Value } from "./parser";
+import type {
+    BinaryOperation,
+    Expression,
+    Implication,
+    Negation,
+    Value,
+} from "./parser";
 import { tokenize, TokenType } from "./tokenize";
 
 export type VariableValues = {
@@ -7,6 +13,8 @@ export type VariableValues = {
 
 export const evalExpr = (expr: Expression, values: VariableValues): boolean => {
     switch (expr.type) {
+        case TokenType.IMPL:
+            return evalImplication(expr, values);
         case TokenType.OR:
             return evalOr(expr, values);
         case TokenType.AND:
@@ -16,6 +24,15 @@ export const evalExpr = (expr: Expression, values: VariableValues): boolean => {
         case TokenType.VAR:
             return evalVar(expr, values);
     }
+};
+
+export const evalImplication = (
+    expr: Implication,
+    values: VariableValues
+): boolean => {
+    const A = evalExpr(expr.hypothesis, values);
+    const B = evalExpr(expr.conclusion, values);
+    return !A || B;
 };
 
 export const evalOr = (
@@ -39,6 +56,10 @@ export const collectVariables = (expr: Expression): Set<string> => {
         const lhsVariables = collectVariables(expr.lhs);
         const rhsVariables = collectVariables(expr.rhs);
         return lhsVariables.union(rhsVariables);
+    } else if (expr.type === TokenType.IMPL) {
+        const hypothesisVariables = collectVariables(expr.hypothesis);
+        const conclusionVariables = collectVariables(expr.conclusion);
+        return hypothesisVariables.union(conclusionVariables);
     } else if (expr.type === TokenType.NOT) {
         return collectVariables(expr.expression);
     } else if (expr.type === TokenType.VAR) {
