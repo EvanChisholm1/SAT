@@ -17,7 +17,13 @@ export type Negation = {
     expression: Expression;
 };
 
-export type Expression = Value | BinaryOperation | Negation;
+export type Implication = {
+    type: TokenType.IMPL;
+    hypothesis: Expression;
+    conclusion: Expression;
+};
+
+export type Expression = Value | BinaryOperation | Negation | Implication;
 
 interface ParseResult {
     result: Expression;
@@ -33,7 +39,27 @@ const createParseResult = (
 });
 
 export const parse = (tokenList: Token[]): Expression => {
-    return parseOr(tokenList).result;
+    return parseImplication(tokenList).result;
+};
+
+const parseImplication = (tokenList: Token[]): ParseResult => {
+    const { result: left, remainingTokens } = parseOr(tokenList);
+
+    if (remainingTokens[0]?.type === TokenType.IMPL) {
+        const { result: right, remainingTokens: afterRight } = parseImplication(
+            remainingTokens.slice(1)
+        );
+        return createParseResult(
+            {
+                type: TokenType.IMPL,
+                hypothesis: left,
+                conclusion: right,
+            },
+            afterRight
+        );
+    } else {
+        return createParseResult(left, remainingTokens);
+    }
 };
 
 const parseOr = (tokenList: Token[]): ParseResult => {

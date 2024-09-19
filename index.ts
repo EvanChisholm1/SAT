@@ -3,6 +3,8 @@ import { parse } from "./src/parser";
 import { evalExpr } from "./src/eval";
 import { solve } from "./src/solve";
 
+console.log(parse(tokenize("NOT A AND B => B")));
+
 const file = Bun.file("./test.sat");
 const text = await file.text();
 

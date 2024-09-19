@@ -6,6 +6,7 @@ export enum TokenType {
     OPEN = "open",
     CLOSE = "close",
     EOF = "eof",
+    IMPL = "IMPLICATION",
 }
 
 export type Token = {
@@ -25,6 +26,8 @@ const createToken = (tokenString: string): Token => {
             return { type: TokenType.OPEN };
         case ")":
             return { type: TokenType.CLOSE };
+        case "=>":
+            return { type: TokenType.IMPL };
         default:
             return { type: TokenType.VAR, value: tokenString };
     }
