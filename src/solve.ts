@@ -41,3 +41,41 @@ const search = (
 
     return { found: false };
 };
+
+export type ExhaustiveSolveResult = {
+    variableArray: string[];
+    values: ExhaustiveSearchResult[];
+};
+
+export const solveExhaustive = (ast: Expression): ExhaustiveSolveResult => {
+    const variableArray = setToArray(collectVariables(ast));
+    return { variableArray, values: searchExhaustive(ast, variableArray, {}) };
+};
+
+export type ExhaustiveSearchResult = {
+    truthValue: boolean;
+    config: VariableValues;
+};
+
+export const searchExhaustive = (
+    expr: Expression,
+    remainingVars: string[],
+    varValues: VariableValues
+): ExhaustiveSearchResult[] => {
+    if (remainingVars.length === 0) {
+        const truthValue = evalExpr(expr, varValues);
+        return [{ truthValue, config: varValues }];
+    }
+
+    const [current, ...remaining] = remainingVars;
+    const lhs = searchExhaustive(expr, remaining, {
+        ...varValues,
+        [current]: false,
+    });
+    const rhs = searchExhaustive(expr, remaining, {
+        ...varValues,
+        [current]: true,
+    });
+
+    return [...lhs, ...rhs];
+};
